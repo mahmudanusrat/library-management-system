@@ -11,7 +11,7 @@ import auth from "../firebase/firebase.config";
 import { GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 const AuthProvider = ({ routes }) => {
   const googleProvider = new GoogleAuthProvider();
@@ -41,33 +41,28 @@ const AuthProvider = ({ routes }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async(currentUser) => {
-      try {
-        setUser(currentUser);
-
-        if (currentUser?.email) {
-          const user = { email: currentUser.email };
-          const res = await axios.post("https://library-management-system-server-side-phi.vercel.app/jwt", user, {
-            withCredentials: true,
-          });
-          console.log("JWT Response:", res.data);
-        } else {
-          const res = await axios.post("https://library-management-system-server-side-phi.vercel.app/logout", {}, {
-            withCredentials: true,
-          });
-          console.log("Logout Response:", res.data);
-        }
-      } catch (error) {
-        console.error("Auth State Change Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    });
-
      
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+        if (currentUser?.email) {
+          setUser(currentUser);
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/jwt`,
+            {
+              email: currentUser?.email,
+            },
+            { withCredentials: true }
+          );
+        } else {
+          setUser(currentUser);
+          await axios(`${import.meta.env.VITE_API_URL}/logout`, {
+            withCredentials: true,
+          });
+        }
+        setLoading(false);
+      });
+      return () => {
+        return unsubscribe();
+      };
+    }, []);
 
   const authInfo = {
     user,

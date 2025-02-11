@@ -6,12 +6,12 @@ const Slide = ({ image, text1, text2,button, isActive }) => {
 
   return (
     <div
-      className="w-full bg-center bg-cover h-[38rem]"
+      className="bg-center bg-cover h-[38rem]"
       style={{
         backgroundImage: `url(${image})`,
       }}
     >
-      <div className="flex items-center justify-left w-full h-full bg-gray-900/70">
+      <div className="flex items-center  w-full h-full ">
         <div className="text-left relative space-y-10 px-16">
           
           <motion.h1
@@ -29,7 +29,7 @@ const Slide = ({ image, text1, text2,button, isActive }) => {
             initial={{ x: -200, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-            className="text-3xl font-semibold text-white lg:text-5xl mt-4"
+            className="text-3xl font-semibold text-white lg:text-5xl "
           >
             {text2}
           </motion.p>
@@ -42,7 +42,7 @@ const Slide = ({ image, text1, text2,button, isActive }) => {
           >
             <Link
               to="/"
-              className="w-full px-5 py-4 text-md font-medium text-white bg-[#06BBCC] rounded-full hover:bg-[#181D38]"
+              className="w-full px-4 py-4  text-md font-medium text-white bg-[#06BBCC] rounded-full hover:bg-[#181D38]"
             >
               {button}
             </Link>

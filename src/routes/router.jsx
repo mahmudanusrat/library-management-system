@@ -10,9 +10,9 @@ import PrivateRouter from "./PrivateRouter";
 import BorrowedBooksPage from "../pages/BorrowedBooksPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import UpdateBookPage from "../pages/UpdateBookPage";
-import BookCategories from "../components/BookCategories";
 import CategoryBooks from "../pages/CategoryBooks";
 import DetailsPage from "../pages/DetailsPage";
+import BookCategories from '../components/Home/BookCategories/BookCategories'
 
 const router = createBrowserRouter([
   {
