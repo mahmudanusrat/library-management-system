@@ -13,6 +13,7 @@ import ErrorPage from "../pages/ErrorPage";
 import LoginPage from "../pages/Login/LoginPage";
 import RegisterPage from "../pages/Registration/RegisterPage";
 import HomePage from "../pages/Home/HomePage";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRouter>
             <BorrowedBooksPage></BorrowedBooksPage>
+          </PrivateRouter>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRouter>
+            <Dashboard></Dashboard>
           </PrivateRouter>
         ),
       },

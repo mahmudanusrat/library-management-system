@@ -1,9 +1,13 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const AddBookPage = () => {
-  const handleAddBook = (event) => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleAddBook = async (event) => {
     event.preventDefault();
     const form = event.target;
     const bookImage = form.bookImage.value;
@@ -25,35 +29,26 @@ const AddBookPage = () => {
       rating,
       bookContent,
     };
-    console.log(newBook);
 
-    axios
-      .post("${import.meta.env.VITE_API_URL}/book", newBook, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        const data = response.data;
-        if (data.insertedId) {
-          Swal.fire({
-            title: "Success!",
-            text: "Book Added Successfully",
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
-          event.target.reset();
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding book:", error);
-        Swal.fire({
-          title: "Error!",
-          text: "Failed to add book. Please try again.",
-          icon: "error",
-          confirmButtonText: "Ok",
-        });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/book`, newBook);
+      Swal.fire({
+        title: "Success!",
+        text: "Book Added Successfully",
+        icon: "success",
+        confirmButtonText: "Ok",
       });
+      navigate("/allBooks");
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to add book. Please try again.",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="bg-[#06BBCC0F] py-4">

@@ -70,9 +70,7 @@ const Navbar = () => {
               Borrowed Books
             </NavLink>
           </li>
-        </>
-      )}
-      <li>
+          <li>
         <NavLink
           to="/dashboard"
           className={({ isActive }) =>
@@ -84,6 +82,9 @@ const Navbar = () => {
           Dashboard
         </NavLink>
       </li>
+        </>
+      )}
+      
     </div>
   );
 

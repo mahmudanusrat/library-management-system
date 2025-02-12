@@ -3,24 +3,36 @@ import Lottie from "lottie-react";
 import communityAnim from "../assets/community.json";
 
 const JoinCommunity = () => {
+  const handleJoinNow = () => {
+    window.open("https://your-group-link.com", "_blank"); // 🔗 Replace with your actual group link
+  };
+
   return (
-    <div className="p-10 flex items-center justify-between">
-      <div className="text-left space-y-5">
+    <div className="p-10 flex flex-col-reverse md:flex-row items-center justify-between gap-8">
+      {/* Text Content */}
+      <div className="text-center md:text-left space-y-5 w-full md:w-1/2">
         <h1 className="text-[#00000080] uppercase text-lg">
           JOIN THE COMMUNITY COURSE AND UPGRADE YOUR SKILL
         </h1>
         <p className="uppercase text-[#181d38] text-3xl font-bold">
-          Stay Connect with our latest
+          Stay Connected with our latest
           <span className="text-[#06bbcc]"> community</span>
         </p>
-        <button className="bg-[#06BBCC] text-white btn rounded-xl hover:bg-[#181D38] mt-2">
-          Join Now
-        </button>
+        <div className="flex justify-center md:justify-start">
+          <button
+            onClick={handleJoinNow}
+            className="bg-[#06BBCC] text-white px-6 py-2 rounded-xl hover:bg-[#181D38] transition"
+          >
+            Join Now
+          </button>
+        </div>
       </div>
-      <div className="flex justify-center items-center">
+
+      {/* Lottie Animation */}
+      <div className="w-full md:w-1/2 flex justify-center">
         <Lottie 
           animationData={communityAnim} 
-          style={{ height: "300px", width: "400px" }} // Resize animation
+          className="w-80 h-80 md:w-96 md:h-96"
         />
       </div>
     </div>

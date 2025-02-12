@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const BookCategories = () => {
   const navigate = useNavigate();
-
+const axiosSecure = useAxiosSecure()
   const { data: categories = [], isLoading, error } = useQuery({
     queryKey: ["categories"],
     queryFn:  async () => {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/categories`);
+      const { data } = await axiosSecure.get(`${import.meta.env.VITE_API_URL}/categories`);
       return data.slice(0, 4); // Only take the first 4 categories
     },
   });
@@ -24,7 +25,7 @@ const BookCategories = () => {
         {" "}
         BROWSE ONLINE Book <span className="text-[#06bbcc]">Categories</span>
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {categories.length === 0 ? (
           <p className="text-gray-500 text-center col-span-full">
             No categories available or wait some time for loading.
@@ -40,6 +41,10 @@ const BookCategories = () => {
             </div>
           ))
         )}
+      </div>
+      <div className="text-center mt-6">
+        <Link to="/allBooks" className="bg-[#06BBCC] text-white px-6 py-2 rounded-xl hover:bg-[#181D38] transition"
+          >View All Books</Link>
       </div>
     </div>
   );

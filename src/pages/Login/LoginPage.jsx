@@ -1,16 +1,20 @@
 import React, { useContext, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
 
 const LoginPage = () => {
-  const { signInWithGoogle, signIn, logOut } = useAuth();
+  const {user, signInWithGoogle, signIn, logOut } = useAuth();
   const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-
+  
+  const from = location.state?.from?.pathname || '/';
+  
+  if (user) return <Navigate to='/' replace={true} />
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -47,9 +51,9 @@ const LoginPage = () => {
     }
   };
   const googleLoginHandler = () => {
-    // signInWithGoogle().then((res) => {
-    //   navigate(location.state?.from?.pathname || "/");
-    // });
+    signInWithGoogle().then((res) => {
+      navigate(location.state?.from?.pathname || "/");
+    });
   };
 
   return (

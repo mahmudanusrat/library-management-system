@@ -27,8 +27,7 @@ const BorrowedBooksPage = () => {
       return data;
     },
   });
-  if (isLoading) return <LoadingSpinner></LoadingSpinner>;
-
+  
   const handleReturnBook = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -38,25 +37,31 @@ const BorrowedBooksPage = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, Return it!",
-    }).then((result) => {
+    }).then( async (result) => {
       if (result.isConfirmed) {
-        fetch(`${import.meta.env.VITE_API_URL}/borrowedBooks/${id}`, {
-          method: "DELETE",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.deletedCount > 0) {
-              Swal.fire("Returned!", "Your book has been returned.", "success");
-              setBorrowedBooks(
-                borrowedBooks.filter((borrowedBook) => borrowedBook._id !== id)
-              );
-            }
-          })
-          .catch((error) => console.error("Error returning book:", error));
+        try{
+          await axios.delete(`${import.meta.env.VITE_API_URL}/borrowedBooks/${id}`)
+          refetch();
+          Swal.fire("Returned!", "The book has been returned.", "success");
+        } catch (err) {
+          console.error(err);
+          Swal.fire(
+            "Error!",
+            "returned the product.",
+            "error"
+          );
+        }
       }
     });
   };
-
+  if (isLoading) return <LoadingSpinner></LoadingSpinner>;
+  if (borrowedBooks.length === 0) {
+    return (
+      <div className="text-center mt-10">
+        <p className="text-gray-500 text-lg">No products found.</p>
+      </div>
+    );
+  }
   const formatDate = (date) => {
     const newDate = new Date(date);
     return newDate.toLocaleDateString();
@@ -65,11 +70,7 @@ const BorrowedBooksPage = () => {
     <div className="bg-[#06BBCC0F] p-4">
       <div className="max-w-screen-xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Your Borrowed Books</h1>
-        {loading ? (
-          <div className="loader">Loading...</div>
-        ) : borrowedBooks.length === 0 ? (
-          <p>No borrowed books found.</p>
-        ) : (
+       
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {borrowedBooks.map((borrowedBook) => (
               <div
@@ -94,7 +95,6 @@ const BorrowedBooksPage = () => {
               </div>
             ))}
           </div>
-        )}
       </div>
     </div>
   );

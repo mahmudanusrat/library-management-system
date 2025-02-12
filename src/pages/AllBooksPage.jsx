@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/Shared/Loading/LoadingSpinner";
 import axios from "axios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const AllBooksPage = () => {
   // const books = useLoaderData(); 
   const navigate = useNavigate();
   const [showAvailableOnly, setShowAvailableOnly] = useState(false);
   const [viewMode, setViewMode] = useState("Card View");
-
+const axiosSecure = useAxiosSecure()
   const {
     data: book,
     isLoading,
@@ -19,7 +20,7 @@ const AllBooksPage = () => {
   } = useQuery({
     queryKey: ["book"],
     queryFn: async () => {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/book`);
+      const { data } = await axiosSecure(`${import.meta.env.VITE_API_URL}/book`);
       return data;
     },
   });

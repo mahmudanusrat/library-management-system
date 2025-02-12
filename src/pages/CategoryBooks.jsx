@@ -2,22 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ReactStars from "react-rating-stars-component";
+import useAuth from "../hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const CategoryBooks = () => {
   const { category } = useParams();
-  const [books, setBooks] = useState([]);
+  const {user} = useAuth()
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/book?category=${category}`)
-      .then((res) => {
-        setBooks(res.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching books:", err);
-      });
-  }, [category]);
+const axiosSecure = useAxiosSecure()
+ 
+  const { data: books = [], isLoading, error } = useQuery({
+    queryKey: ["books", category],
+    queryFn:  async () => {
+      const { data } = await axiosSecure.get(`${import.meta.env.VITE_API_URL}/book?category=${category}`)
+      return data;
+    },
+  });
 
   const handleDetailsClick = (bookId) => {
     navigate(`/book/${bookId}`);
