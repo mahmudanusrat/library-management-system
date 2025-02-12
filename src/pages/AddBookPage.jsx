@@ -28,7 +28,7 @@ const AddBookPage = () => {
     console.log(newBook);
 
     axios
-      .post("https://library-management-system-server-side-phi.vercel.app/book", newBook, {
+      .post("${import.meta.env.VITE_API_URL}/book", newBook, {
         headers: {
           "Content-Type": "application/json",
         },

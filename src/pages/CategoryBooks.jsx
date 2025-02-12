@@ -10,7 +10,7 @@ const CategoryBooks = () => {
 
   useEffect(() => {
     axios
-      .get(`https://library-management-system-server-side-phi.vercel.app/book?category=${category}`)
+      .get(`${import.meta.env.VITE_API_URL}/book?category=${category}`)
       .then((res) => {
         setBooks(res.data);
       })

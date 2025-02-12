@@ -2,24 +2,32 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { AuthContext } from "../provider/AuthProvider";
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "../hooks/useAuth";
+import LoadingSpinner from "../components/Shared/Loading/LoadingSpinner";
 
 const BorrowedBooksPage = () => {
-  const { user } = useContext(AuthContext);
-  const [borrowedBooks, setBorrowedBooks] = useState([]);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .get(
-        `https://library-management-system-server-side-phi.vercel.app/borrowedBooks?email=${user.email}`
-      )
-      .then((res) => {
-        setBorrowedBooks(res.data);
-      })
-      .catch((error) => console.error("Error fetching books:", error));
-  }, [user.email]);
+  const {
+    data: borrowedBooks,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["borrowedBooks", user?.email],
+    queryFn: async () => {
+      const { data } = await axios(
+        `${import.meta.env.VITE_API_URL}/borrowedBooks?email=${user?.email}`,
+        { withCredentials: true }
+      );
+      return data;
+    },
+  });
+  if (isLoading) return <LoadingSpinner></LoadingSpinner>;
 
   const handleReturnBook = (id) => {
     Swal.fire({
@@ -32,12 +40,9 @@ const BorrowedBooksPage = () => {
       confirmButtonText: "Yes, Return it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(
-          `https://library-management-system-server-side-phi.vercel.app/borrowedBooks/${id}`,
-          {
-            method: "DELETE",
-          }
-        )
+        fetch(`${import.meta.env.VITE_API_URL}/borrowedBooks/${id}`, {
+          method: "DELETE",
+        })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {

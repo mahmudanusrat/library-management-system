@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const BookCategories = () => {
-  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .get("https://library-management-system-server-side-phi.vercel.app/categories")
-      .then((res) => {
-        setCategories(res.data.slice(0, 4));
-      })
-      .catch((err) => {
-        console.error("Error fetching categories:", err);
-      });
-  }, []);
-
+  const { data: categories = [], isLoading, error } = useQuery({
+    queryKey: ["categories"],
+    queryFn:  async () => {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/categories`);
+      return data.slice(0, 4); // Only take the first 4 categories
+    },
+  });
   const handleCategoryClick = (category) => {
     navigate(`/category/${category}`);
   };

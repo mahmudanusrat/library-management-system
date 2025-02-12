@@ -1,66 +1,68 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { AuthContext } from "../provider/AuthProvider";
+import useAuth from "../hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../components/Shared/Loading/LoadingSpinner";
 
 const DetailsPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { bookId } = useParams();
-  const [book, setBook] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios.get(`https://library-management-system-server-side-phi.vercel.app/book/${bookId}`).then((res) => {
-      setBook(res.data);
-    });
-  }, [bookId]);
-
-  const handleBorrow = (event) => {
+  const [loading, setLoading] = useState(false);
+  const {
+    data: book = {},
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["book", bookId],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/book/${bookId}`
+      );
+      return data;
+    },
+  });
+  if (isLoading) return <LoadingSpinner></LoadingSpinner>;
+  if (book.quantity <= 0) {
+    Swal.fire("Sorry", "This book is out of stock!", "error");
+    return;
+  }
+  const handleBorrow = async (event) => {
     event.preventDefault();
     const form = event.target;
     const returnDate = form.returnDate.value;
-    
+
     const borrowData = {
       bookId,
       userEmail: user.email,
       userName: user.displayName,
       returnDate,
     };
-    if (book.quantity <= 0) {
-      Swal.fire("Sorry", "This book is out of stock!", "error");
-      return;
-    }
-    setBook((prev) => ({ ...prev, quantity: prev.quantity - 1 }));
-
-    fetch("https://library-management-system-server-side-phi.vercel.app/borrowedBooks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(borrowData),
-    })
-      .then((res) => res.json())
-      .then(() => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/borrowedBooks`,borrowData);
         Swal.fire(
           "Borrowed!",
-          "You have successfully borrowed. Please remember to return it",
+          "You have successfully borrowed this book.",
           "success"
         );
-        navigate("/borrowedBooks");
         setIsModalOpen(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setBook((prev) => ({ ...prev, quantity: prev.quantity + 1 }));
-        Swal.fire(
-          "Error",
-          "Failed to borrow the book. Please try again.",
-          "error"
-        );
-      });
+        refetch(); // ✅ Refetch book details to update quantity
+        navigate("/borrowedBooks");
+      } catch (error) {
+      // console.error(error);
+      Swal.fire(
+        "Error",
+        "Failed to borrow the book. Please try again.",
+        "error"
+      );
+    }finally {
+      setLoading(false);
+    }
   };
- 
-  
+
   return (
     <div className="bg-[#06BBCC0F] py-5">
       <div className="card lg:card-side bg-base-100 max-w-screen-sm mx-auto shadow-xl px-5">

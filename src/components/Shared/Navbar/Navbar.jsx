@@ -5,11 +5,11 @@ import logo from "../../../assets/book-logo.png";
 import LoadingSpinner from "../Loading/LoadingSpinner";
 
 const Navbar = () => {
-  const { user, loading, handleLogout } = useContext(AuthContext);
+  const { user, loading, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const logoutHandler = () => {
-    handleLogout();
+    logOut();
     navigate("/");
     if (loading) {
       return <LoadingSpinner></LoadingSpinner>;

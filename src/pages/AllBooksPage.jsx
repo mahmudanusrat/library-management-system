@@ -1,15 +1,42 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/Shared/Loading/LoadingSpinner";
+import axios from "axios";
 
 const AllBooksPage = () => {
-  const books = useLoaderData(); 
+  // const books = useLoaderData(); 
   const navigate = useNavigate();
   const [showAvailableOnly, setShowAvailableOnly] = useState(false);
   const [viewMode, setViewMode] = useState("Card View");
 
+  const {
+    data: book,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["book"],
+    queryFn: async () => {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/book`);
+      return data;
+    },
+  });
+  if (isLoading || isError) return <LoadingSpinner />;
+
+  if (book.length === 0) {
+    return (
+      <div className="text-center mt-10">
+        <p className="text-gray-500 text-lg">No books found.</p>
+      </div>
+    );
+  }
+
+
   const filteredBooks = showAvailableOnly
-    ? books.filter((book) => book.quantity > 0)
-    : books;
+    ? book.filter((book) => book.quantity > 0)
+    : book;
 
   const handleUpdateClick = (id) => {
     navigate(`/updateBook/${id}`);
@@ -18,7 +45,7 @@ const AllBooksPage = () => {
   return (
     <div className="p-4 bg-[#06BBCC0F] ">
       <div className="max-w-screen-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Total Books: {filteredBooks.length}</h1>
+      {/* <h1 className="text-2xl font-bold mb-6">Total Books: {book.length}</h1> */}
       <div className="flex justify-between items-center mb-4">
         <label className="flex items-center space-x-2">
           <input

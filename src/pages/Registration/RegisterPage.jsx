@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { AuthContext } from "../provider/AuthProvider";
 import Swal from "sweetalert2"; 
+import useAuth from "../../hooks/useAuth";
 
 const RegisterPage = () => {
-  const { handleRegister, manageProfile, handleGoogleLogin } = useContext(AuthContext);
+  const { createUser, manageProfile, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
@@ -25,7 +25,7 @@ const RegisterPage = () => {
       return;
     }
 
-    handleRegister(email, password)
+    createUser(email, password)
       .then((res) => {
         manageProfile(name, image);
         Swal.fire({
@@ -45,7 +45,7 @@ const RegisterPage = () => {
   };
 
   const googleLoginHandler = () => {
-    handleGoogleLogin()
+    signInWithGoogle()
       .then(() => {
         Swal.fire({
           icon: "success",

@@ -11,7 +11,7 @@ const UpdateBookPage = () => {
 
   useEffect(() => {
     axios
-      .get(`https://library-management-system-server-side-phi.vercel.app/book/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/book/${id}`)
       .then((response) => {
         setBook(response.data);
       })
@@ -40,7 +40,7 @@ const UpdateBookPage = () => {
     };
 
     axios
-      .put(`https://library-management-system-server-side-phi.vercel.app/book/${id}`, updatedBook, {
+      .put(`${import.meta.env.VITE_API_URL}/book/${id}`, updatedBook, {
         headers: {
           "Content-Type": "application/json",
         },

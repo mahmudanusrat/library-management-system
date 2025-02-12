@@ -1,35 +1,28 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../layouts/Main";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
 import AllBooksPage from "../pages/AllBooksPage";
 import AddBookPage from "../pages/AddBookPage";
 import PrivateRouter from "./PrivateRouter";
 import BorrowedBooksPage from "../pages/BorrowedBooksPage";
-import NotFoundPage from "../pages/NotFoundPage";
 import UpdateBookPage from "../pages/UpdateBookPage";
 import CategoryBooks from "../pages/CategoryBooks";
 import DetailsPage from "../pages/DetailsPage";
-import BookCategories from '../components/Home/BookCategories/BookCategories'
+import BookCategories from "../components/Home/BookCategories/BookCategories";
+import ErrorPage from "../pages/ErrorPage";
+import LoginPage from "../pages/Login/LoginPage";
+import RegisterPage from "../pages/Registration/RegisterPage";
+import HomePage from "../pages/Home/HomePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
         element: <HomePage></HomePage>,
-      },
-      {
-        path: "/login",
-        element: <LoginPage></LoginPage>,
-      },
-      {
-        path: "/register",
-        element: <RegisterPage></RegisterPage>,
       },
       {
         path: "/allBooks",
@@ -38,14 +31,14 @@ const router = createBrowserRouter([
             <AllBooksPage></AllBooksPage>
           </PrivateRouter>
         ),
-        loader:  ()=>fetch('https://library-management-system-server-side-phi.vercel.app/book')
       },
       {
         path: "/updateBook/:id",
-        element: <PrivateRouter>
-          <UpdateBookPage />
-        </PrivateRouter>,
-        
+        element: (
+          <PrivateRouter>
+            <UpdateBookPage />
+          </PrivateRouter>
+        ),
       },
       {
         path: "/addBook",
@@ -55,19 +48,24 @@ const router = createBrowserRouter([
           </PrivateRouter>
         ),
       },
-     
+
       {
-        path: '/categories',
+        path: "/categories",
         element: <BookCategories />,
       },
       {
-        path: '/category/:category',
-        element:<PrivateRouter> <CategoryBooks /></PrivateRouter>,
+        path: "/category/:category",
+        element: (
+          <PrivateRouter>
+            <CategoryBooks />
+          </PrivateRouter>
+        ),
       },
       {
-        path: '/book/:bookId', 
+        path: "/book/:bookId",
         element: <DetailsPage />,
-      }, {
+      },
+      {
         path: "/borrowedBooks",
         element: (
           <PrivateRouter>
@@ -78,8 +76,12 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "*",
-    element: <NotFoundPage></NotFoundPage>,
+    path: "/login",
+    element: <LoginPage></LoginPage>,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage></RegisterPage>,
   },
 ]);
 
