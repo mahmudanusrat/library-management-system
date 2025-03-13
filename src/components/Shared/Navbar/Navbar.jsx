@@ -8,38 +8,12 @@ const Navbar = () => {
   const { user, loading, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Check the local storage on initial load
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
   const logoutHandler = () => {
     logOut();
     navigate("/");
     if (loading) {
       return <LoadingSpinner></LoadingSpinner>;
     }
-  };
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => {
-      const newMode = !prev;
-      if (newMode) {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-      }
-      return newMode;
-    });
   };
 
   const links = (
@@ -159,12 +133,7 @@ const Navbar = () => {
           </div>
 
           <div className="navbar-end gap-5">
-            <button
-              onClick={toggleDarkMode}
-              className="btn btn-md bg-[#06BBCC] text-white hover:bg-[#181D38]"
-            >
-              {isDarkMode ? "Light Mode" : "Dark Mode"}
-            </button>
+            
 
             {!user ? (
               <>

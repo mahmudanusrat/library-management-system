@@ -5,13 +5,13 @@ import Footer from '../components/Shared/Footer/Footer';
 
 const Main = () => {
     return (
-        <div>
-            <Navbar></Navbar>
-            <div className='min-h-[calc(100vh-306px)] mt-24'>
-            <Outlet></Outlet>
-            </div>
-            <Footer></Footer>
-        </div>
+        <div className="bg-white w-full mx-auto">
+        <Navbar></Navbar>
+        <div className="pt-22 min-h-[calc(100vh-68px)]">
+           <Outlet />
+         </div>
+         <Footer></Footer>
+     </div>
     );
 };
 
